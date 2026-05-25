@@ -2,6 +2,18 @@ venv/
 
 commands.txt
 
-.env.example
-
+# Real secrets — never commit
 .env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Node
+node_modules/
+frontend/dist/
+
+# Docker
+*.log
