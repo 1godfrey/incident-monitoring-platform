@@ -1,0 +1,7 @@
+{
+  "name": "incident-monitoring",
+  "version": "0.1.0",
+  "description": "Incident monitoring platform",
+  "private": true,
+  "license": "MIT"
+}
