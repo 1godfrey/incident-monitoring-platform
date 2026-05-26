@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0](https://github.com/1godfrey/incident-monitoring-platform/compare/v1.0.0...v1.1.0) (2026-05-26)
+
+
+### Features
+
+* Frontend deployment ([2cc2dd2](https://github.com/1godfrey/incident-monitoring-platform/commit/2cc2dd28e407fe54ea1e8ec5a483d285801c0353))
+* Hit Vite API URL ([1ec7e2d](https://github.com/1godfrey/incident-monitoring-platform/commit/1ec7e2d8fd1a88bca56ae9444a8697b684157f67))
+
 ## 1.0.0 (2026-05-26)
 
 
