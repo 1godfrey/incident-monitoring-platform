@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/1godfrey/incident-monitoring-platform/compare/v1.1.0...v1.1.1) (2026-05-26)
+
+
+### Bug Fixes
+
+* Resolve CORS policy ([67baa81](https://github.com/1godfrey/incident-monitoring-platform/commit/67baa8113413b11def606b0630947c98b07e7fcc))
+
 ## [1.1.0](https://github.com/1godfrey/incident-monitoring-platform/compare/v1.0.0...v1.1.0) (2026-05-26)
 
 
