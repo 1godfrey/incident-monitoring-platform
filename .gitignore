@@ -7,6 +7,8 @@ screenshots/
 # Real secrets — never commit
 .env
 
+frontend/.env
+
 # Python
 __pycache__/
 *.pyc
