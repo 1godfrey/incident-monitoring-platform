@@ -65,7 +65,9 @@ app = FastAPI(
 # (e.g. the Vite dev server and prod CDN URL) before any public deployment.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://incident-monitoring-platform.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
