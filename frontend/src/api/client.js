@@ -1,6 +1,6 @@
-// All requests go through /api so the Vite dev proxy and the nginx
-// production proxy both route them to the FastAPI backend correctly.
-const BASE = '/api'
+// In dev the Vite proxy rewrites /api/* → backend (no prefix).
+// On Vercel VITE_API_URL is the full backend origin, so we call it directly.
+const BASE = import.meta.env.VITE_API_URL ?? '/api'
 
 async function request(path, options = {}) {
   const res = await fetch(`${BASE}${path}`, {
