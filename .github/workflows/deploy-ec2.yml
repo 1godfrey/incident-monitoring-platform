@@ -34,14 +34,13 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/incident-monitor.pem
           chmod 600 ~/.ssh/incident-monitor.pem
-
-      - name: Add EC2 host to known_hosts
-        run: |
-          ssh-keyscan -H 3.141.100.21 >> ~/.ssh/known_hosts
+          # Accept new host keys automatically; still reject changed keys (MITM protection)
+          printf "Host 3.141.100.21\n  StrictHostKeyChecking accept-new\n  IdentityFile ~/.ssh/incident-monitor.pem\n" >> ~/.ssh/config
+          chmod 600 ~/.ssh/config
 
       - name: Deploy to EC2
         run: |
-          ssh -i ~/.ssh/incident-monitor.pem ubuntu@3.141.100.21 << EOF
+          ssh ubuntu@3.141.100.21 << 'EOF'
 
             set -e
 
