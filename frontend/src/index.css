@@ -243,6 +243,111 @@ body {
 .form-input:focus { border-color: var(--border-focus); }
 .form-error { font-size: .78rem; color: var(--error); margin-top: .25rem; }
 
+/* ── Alerts Feed ──────────────────────────────────────────────────────── */
+.alerts-feed {
+  margin-bottom: 2rem;
+}
+.alerts-feed-header {
+  display: flex;
+  align-items: baseline;
+  gap: .75rem;
+  margin-bottom: .75rem;
+}
+.alerts-title {
+  font-size: .8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--text-muted);
+}
+.alerts-subtitle {
+  font-size: .72rem;
+  color: var(--text-muted);
+  opacity: .6;
+}
+.alerts-empty {
+  font-size: .85rem;
+  color: var(--text-muted);
+  padding: .6rem 0;
+}
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+}
+
+/* Individual alert card — styled like a Discord embed */
+.alert-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left-width: 3px;
+  border-radius: var(--radius);
+  padding: .7rem 1rem;
+  transition: border-color .15s;
+}
+.alert-card.alert-down      { border-left-color: var(--error); }
+.alert-card.alert-recovered { border-left-color: var(--success); }
+.alert-card:hover { background: var(--bg-card-hover); }
+
+.alert-header {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  flex-wrap: wrap;
+}
+.alert-emoji { font-size: .85rem; line-height: 1; }
+.alert-service-name {
+  font-size: .9rem;
+  font-weight: 600;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.alert-status-badge {
+  font-size: .68rem;
+  font-weight: 700;
+  padding: .15rem .45rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  flex-shrink: 0;
+}
+.alert-status-badge.down      { background: rgba(239,68,68,.15);  color: var(--error); }
+.alert-status-badge.recovered { background: rgba(34,197,94,.15);  color: var(--success); }
+.alert-time {
+  font-size: .7rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+.alert-url {
+  font-size: .73rem;
+  color: var(--text-muted);
+  margin-top: .25rem;
+  word-break: break-all;
+}
+.alert-meta {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  font-size: .75rem;
+  color: var(--text-secondary);
+  margin-top: .3rem;
+}
+.alert-meta-dot { color: var(--text-muted); }
+.alert-content-detail {
+  margin-top: .35rem;
+  font-size: .75rem;
+  color: var(--warning);
+  padding: .28rem .5rem;
+  background: rgba(245,158,11,.08);
+  border: 1px solid rgba(245,158,11,.2);
+  border-radius: 4px;
+}
+
 /* ── Responsive ───────────────────────────────────────────────────────── */
 @media (max-width: 600px) {
   .stats-bar { flex-direction: column; gap: 0; }
