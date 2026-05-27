@@ -1,0 +1,66 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - '**'
+
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'main'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Determine branch name
+        id: branch
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "branch=${{ github.event.inputs.branch }}" >> $GITHUB_OUTPUT
+          else
+            echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/incident-monitor.pem
+          chmod 600 ~/.ssh/incident-monitor.pem
+
+      - name: Add EC2 host to known_hosts
+        run: |
+          ssh-keyscan -H 3.141.100.21 >> ~/.ssh/known_hosts
+
+      - name: Deploy to EC2
+        run: |
+          ssh -i ~/.ssh/incident-monitor.pem ubuntu@3.141.100.21 << EOF
+
+            set -e
+
+            echo "Navigating to repo..."
+            cd ~/incident-monitoring-platform
+
+            echo "Fetching latest branches..."
+            git fetch origin
+
+            echo "Checking out branch..."
+            git checkout ${{ steps.branch.outputs.branch }}
+
+            echo "Pulling latest code..."
+            git pull origin ${{ steps.branch.outputs.branch }}
+
+            echo "Rebuilding containers..."
+            docker compose down
+            docker compose up -d --build
+
+            echo "Deployment complete."
+
+          EOF
