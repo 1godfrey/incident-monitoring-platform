@@ -78,7 +78,7 @@ jobs:
 
           echo "━━━ [5/5] Rebuilding containers ━━━"
           docker compose down --remove-orphans
-          docker compose up -d --build --progress plain
+          docker compose up -d --build
           echo "  → Running containers:"
           docker compose ps
 
