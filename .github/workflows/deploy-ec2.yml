@@ -40,26 +40,28 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh ubuntu@3.141.100.21 << 'EOF'
+          ssh -T ubuntu@3.141.100.21 bash -s << 'EOF'
+          set -euo pipefail
 
-            set -e
+          echo "━━━ [1/5] Navigating to repo ━━━"
+          cd ~/incident-monitoring-platform
+          echo "  → pwd: $(pwd)"
 
-            echo "Navigating to repo..."
-            cd ~/incident-monitoring-platform
+          echo "━━━ [2/5] Fetching remote branches ━━━"
+          git fetch origin
 
-            echo "Fetching latest branches..."
-            git fetch origin
+          echo "━━━ [3/5] Checking out ${{ steps.branch.outputs.branch }} ━━━"
+          git checkout ${{ steps.branch.outputs.branch }}
 
-            echo "Checking out branch..."
-            git checkout ${{ steps.branch.outputs.branch }}
+          echo "━━━ [4/5] Pulling latest code ━━━"
+          git pull origin ${{ steps.branch.outputs.branch }}
+          echo "  → HEAD: $(git log -1 --oneline)"
 
-            echo "Pulling latest code..."
-            git pull origin ${{ steps.branch.outputs.branch }}
+          echo "━━━ [5/5] Rebuilding containers ━━━"
+          docker compose down --remove-orphans
+          docker compose up -d --build --progress plain
+          echo "  → Running containers:"
+          docker compose ps
 
-            echo "Rebuilding containers..."
-            docker compose down
-            docker compose up -d --build
-
-            echo "Deployment complete."
-
+          echo "━━━ Deployment complete ━━━"
           EOF
