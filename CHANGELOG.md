@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.3.0](https://github.com/1godfrey/incident-monitoring-platform/compare/v1.2.0...v1.3.0) (2026-05-27)
+
+
+### Features
+
+* Deploy EC2 workflow ([3002bac](https://github.com/1godfrey/incident-monitoring-platform/commit/3002bac4edabab41363ae6efeaa7d8e1a8429e60))
+* Deploy EC2 workflow ([8bf0f7a](https://github.com/1godfrey/incident-monitoring-platform/commit/8bf0f7a1b4b172742219c9d59dda5eadd7e0e1ae))
+
+
+### Bug Fixes
+
+* Leverage AWS secrets ([0a66320](https://github.com/1godfrey/incident-monitoring-platform/commit/0a6632065609e04cfcc45c84df43b68d197169c1))
+* remove --progress flag unsupported by docker compose on EC2 ([9b61fb4](https://github.com/1godfrey/incident-monitoring-platform/commit/9b61fb4f7886b635c0c5c21705d62511fab6281b))
+* SSH key issue ([a616d0e](https://github.com/1godfrey/incident-monitoring-platform/commit/a616d0e1929d28cbf8cad556816031386c674acd))
+* Update Deploy to EC2 logic ([f0b851b](https://github.com/1godfrey/incident-monitoring-platform/commit/f0b851b3b62281b7c6e33fdba8b537ccdfe6bc1c))
+
 ## [1.2.0](https://github.com/1godfrey/incident-monitoring-platform/compare/v1.1.3...v1.2.0) (2026-05-27)
 
 
