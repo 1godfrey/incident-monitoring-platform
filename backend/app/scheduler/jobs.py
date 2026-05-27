@@ -7,6 +7,7 @@ from sqlalchemy import select
 
 from app.config import settings
 from app.database import AsyncSessionLocal
+from app import crud
 from app.models import HealthCheck, MonitoredService
 
 logger = logging.getLogger(__name__)
@@ -136,6 +137,20 @@ async def maybe_alert_discord(service: MonitoredService, result: dict[str, Any])
         color = 15158332  # red
         status_text = "DOWN"
         emoji = ":red_circle:"
+
+    # Persist the incident so the dashboard can show it (same content as Discord)
+    try:
+        async with AsyncSessionLocal() as db:
+            await crud.create_incident(
+                db,
+                service=service,
+                status=status_text,
+                http_status_code=result["status_code"],
+                response_time_ms=result["response_time_ms"],
+                content_detail=result.get("content_detail"),
+            )
+    except Exception as exc:
+        logger.error("incident_persist_failed", extra={"error": str(exc)})
 
     content_line = f"\n**Content check:** {result['content_detail']}" if result.get("content_detail") else ""
     payload = {

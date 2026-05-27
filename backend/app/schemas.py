@@ -46,6 +46,22 @@ class HealthCheckResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+# ── Incident ──────────────────────────────────────────────────────────────────
+
+class IncidentResponse(BaseModel):
+    id: int
+    service_id: int | None
+    service_name: str
+    service_url: str
+    status: str               # "DOWN" | "RECOVERED"
+    http_status_code: int | None
+    response_time_ms: float
+    content_detail: str | None
+    triggered_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
 # ── Summary ───────────────────────────────────────────────────────────────────
 
 class ServiceSummary(BaseModel):

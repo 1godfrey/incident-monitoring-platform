@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback } from 'react'
 import Header from './components/Header'
 import ServiceCard from './components/ServiceCard'
+import AlertsFeed from './components/AlertsFeed'
 import AddServiceModal from './components/AddServiceModal'
-import { fetchSummary, fetchHealthChecks } from './api/client'
+import { fetchSummary, fetchHealthChecks, fetchIncidents } from './api/client'
 
 export default function App() {
   const [summary, setSummary] = useState([])
   const [healthData, setHealthData] = useState({})
+  const [incidents, setIncidents] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showAddModal, setShowAddModal] = useState(false)
@@ -14,10 +16,14 @@ export default function App() {
 
   const loadAll = useCallback(async () => {
     try {
-      const { services } = await fetchSummary()
+      // Fetch summary, incidents, and health history in parallel
+      const [{ services }, alertData] = await Promise.all([
+        fetchSummary(),
+        fetchIncidents(10),
+      ])
       setSummary(services)
+      setIncidents(alertData)
 
-      // Fetch health history for all services in parallel
       const results = await Promise.allSettled(
         services.map((s) => fetchHealthChecks(s.service_id, 30))
       )
@@ -103,6 +109,10 @@ export default function App() {
             />
           ))}
         </div>
+
+        {!loading && !error && (
+          <AlertsFeed incidents={incidents} />
+        )}
       </main>
 
       {showAddModal && (

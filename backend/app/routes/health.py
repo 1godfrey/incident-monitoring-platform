@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import crud
 from app.database import get_db
-from app.schemas import HealthCheckResponse, ServiceSummary, SummaryResponse
+from app.schemas import HealthCheckResponse, IncidentResponse, ServiceSummary, SummaryResponse
 
 logger = logging.getLogger(__name__)
 router = APIRouter(tags=["health"])
@@ -31,6 +31,19 @@ async def get_service_health(
 
     checks = await crud.get_health_checks_for_service(db, service_id, limit=limit)
     return checks
+
+
+@router.get("/incidents", response_model=list[IncidentResponse])
+async def get_incidents(
+    limit: int = Query(default=50, ge=1, le=200),
+    db: AsyncSession = Depends(get_db),
+):
+    """Return the most recent state-change alerts (DOWN / RECOVERED), newest first.
+
+    These are the same events sent to Discord — persisted so the dashboard
+    can display them without needing a Discord integration on the frontend.
+    """
+    return await crud.get_recent_incidents(db, limit=limit)
 
 
 @router.get("/summary", response_model=SummaryResponse)

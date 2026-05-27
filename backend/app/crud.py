@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 from sqlalchemy import Integer, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import HealthCheck, MonitoredService
+from app.models import HealthCheck, Incident, MonitoredService
 from app.schemas import ServiceCreate
 
 
@@ -61,6 +61,39 @@ async def get_health_checks_for_service(
         .where(HealthCheck.service_id == service_id)
         .order_by(HealthCheck.checked_at.desc())
         .limit(limit)
+    )
+    return result.scalars().all()
+
+
+# ── Incidents ─────────────────────────────────────────────────────────────────
+
+async def create_incident(
+    db: AsyncSession,
+    service: MonitoredService,
+    status: str,
+    http_status_code: int | None,
+    response_time_ms: float,
+    content_detail: str | None,
+) -> Incident:
+    incident = Incident(
+        service_id=service.id,
+        service_name=service.name,
+        service_url=str(service.url),
+        status=status,
+        http_status_code=http_status_code,
+        response_time_ms=response_time_ms,
+        content_detail=content_detail,
+    )
+    db.add(incident)
+    await db.commit()
+    await db.refresh(incident)
+    return incident
+
+
+async def get_recent_incidents(db: AsyncSession, limit: int = 50) -> list[Incident]:
+    """Return the most recent `limit` incidents across all services, newest first."""
+    result = await db.execute(
+        select(Incident).order_by(Incident.triggered_at.desc()).limit(limit)
     )
     return result.scalars().all()
 

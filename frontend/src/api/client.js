@@ -27,3 +27,6 @@ export const addService = (name, url, jsonPath = null, expectedValue = null) =>
     method: 'POST',
     body: JSON.stringify({ name, url, json_path: jsonPath, expected_value: expectedValue }),
   })
+
+export const fetchIncidents = (limit = 50) =>
+  request(`/incidents?limit=${limit}`)
