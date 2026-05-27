@@ -19,7 +19,7 @@ export default function App() {
       // Fetch summary, incidents, and health history in parallel
       const [{ services }, alertData] = await Promise.all([
         fetchSummary(),
-        fetchIncidents(50),
+        fetchIncidents(10),
       ])
       setSummary(services)
       setIncidents(alertData)
@@ -91,10 +91,6 @@ export default function App() {
 
         {!loading && error && <div className="error-state">{error}</div>}
 
-        {!loading && !error && (
-          <AlertsFeed incidents={incidents} />
-        )}
-
         {!loading && !error && summary.length === 0 && (
           <div className="empty-state">
             <p>No services are being monitored yet.</p>
@@ -113,6 +109,10 @@ export default function App() {
             />
           ))}
         </div>
+
+        {!loading && !error && (
+          <AlertsFeed incidents={incidents} />
+        )}
       </main>
 
       {showAddModal && (

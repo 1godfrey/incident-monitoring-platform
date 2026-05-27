@@ -245,6 +245,7 @@ body {
 
 /* ── Alerts Feed ──────────────────────────────────────────────────────── */
 .alerts-feed {
+  margin-top: 2rem;
   margin-bottom: 2rem;
 }
 .alerts-feed-header {
@@ -274,7 +275,16 @@ body {
   display: flex;
   flex-direction: column;
   gap: .45rem;
+  /* Show ~4 cards (≈88px each + 7px gap), scroll for the rest */
+  max-height: calc(4 * 88px + 3 * 7px);
+  overflow-y: auto;
+  padding-right: .25rem;   /* breathing room beside the scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
+.alerts-list::-webkit-scrollbar       { width: 5px; }
+.alerts-list::-webkit-scrollbar-track { background: transparent; }
+.alerts-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
 
 /* Individual alert card — styled like a Discord embed */
 .alert-card {
