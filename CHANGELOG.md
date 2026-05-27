@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.0](https://github.com/1godfrey/incident-monitoring-platform/compare/v1.1.3...v1.2.0) (2026-05-27)
+
+
+### Features
+
+* Alerts under services + scrollbar ([59d6c94](https://github.com/1godfrey/incident-monitoring-platform/commit/59d6c9400d71edf4f1c7464c590bc9803283dbc9))
+* Discord alerts on dashbaord ([2e9ec63](https://github.com/1godfrey/incident-monitoring-platform/commit/2e9ec6300ee33fba4c03385b40915e76dbf56d3c))
+* Discord alerts on dashbaord ([ec46300](https://github.com/1godfrey/incident-monitoring-platform/commit/ec46300aeddc9203e1ceaa6586a5f3b72f8976b5))
+* Discord alerts on summary ([3d3f30e](https://github.com/1godfrey/incident-monitoring-platform/commit/3d3f30eb3341dc8582adb370bd97648ff30cb4b4))
+
 ## [1.1.3](https://github.com/1godfrey/incident-monitoring-platform/compare/v1.1.2...v1.1.3) (2026-05-26)
 
 
