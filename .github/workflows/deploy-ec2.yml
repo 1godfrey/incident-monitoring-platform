@@ -29,12 +29,31 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            ${{ secrets.AWS_REGION }}
+
+      - name: Open port 22 for this runner
+        id: open-ssh
+        run: |
+          RUNNER_IP=$(curl -sf https://checkip.amazonaws.com)/32
+          echo "runner_ip=$RUNNER_IP" >> $GITHUB_OUTPUT
+          echo "  → Runner IP: $RUNNER_IP"
+          aws ec2 authorize-security-group-ingress \
+            --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} \
+            --protocol tcp \
+            --port 22 \
+            --cidr $RUNNER_IP
+          echo "  → Port 22 opened for $RUNNER_IP"
+
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/incident-monitor.pem
           chmod 600 ~/.ssh/incident-monitor.pem
-          # Accept new host keys automatically; still reject changed keys (MITM protection)
           printf "Host 3.141.100.21\n  StrictHostKeyChecking accept-new\n  IdentityFile ~/.ssh/incident-monitor.pem\n" >> ~/.ssh/config
           chmod 600 ~/.ssh/config
 
@@ -65,3 +84,14 @@ jobs:
 
           echo "━━━ Deployment complete ━━━"
           EOF
+
+      - name: Close port 22 for this runner
+        if: always()
+        run: |
+          echo "  → Revoking SSH access for ${{ steps.open-ssh.outputs.runner_ip }}"
+          aws ec2 revoke-security-group-ingress \
+            --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} \
+            --protocol tcp \
+            --port 22 \
+            --cidr ${{ steps.open-ssh.outputs.runner_ip }}
+          echo "  → Port 22 closed"
