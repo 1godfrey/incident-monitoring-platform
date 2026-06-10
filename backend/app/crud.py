@@ -4,7 +4,7 @@ from sqlalchemy import Integer, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import HealthCheck, Incident, MonitoredService
-from app.schemas import ServiceCreate
+from app.schemas import ServiceCreate, ServiceUpdate
 
 
 # ── Services ─────────────────────────────────────────────────────────────────
@@ -29,6 +29,25 @@ async def create_service(db: AsyncSession, data: ServiceCreate) -> MonitoredServ
     await db.commit()
     await db.refresh(service)
     return service
+
+
+async def update_service(
+    db: AsyncSession, service: MonitoredService, data: ServiceUpdate
+) -> MonitoredService:
+    service.name = data.name
+    service.url = str(data.url)
+    service.json_path = data.json_path
+    service.expected_value = data.expected_value
+    await db.commit()
+    await db.refresh(service)
+    return service
+
+
+async def delete_service(db: AsyncSession, service: MonitoredService) -> None:
+    """Delete a service. Cascades to its health checks; related incidents are kept
+    with service_id set to NULL (see Incident model)."""
+    await db.delete(service)
+    await db.commit()
 
 
 # ── Health Checks ─────────────────────────────────────────────────────────────

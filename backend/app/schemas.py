@@ -5,7 +5,7 @@ from pydantic import BaseModel, HttpUrl, field_validator
 
 # ── Service ──────────────────────────────────────────────────────────────────
 
-class ServiceCreate(BaseModel):
+class ServiceBase(BaseModel):
     name: str
     url: HttpUrl  # validated at the API boundary; rejects malformed URLs
     # Optional content-based check configuration.
@@ -20,6 +20,14 @@ class ServiceCreate(BaseModel):
         if not v.strip():
             raise ValueError("name must not be blank")
         return v.strip()
+
+
+class ServiceCreate(ServiceBase):
+    pass
+
+
+class ServiceUpdate(ServiceBase):
+    pass
 
 
 class ServiceResponse(BaseModel):

@@ -2,33 +2,37 @@ import { useState, useEffect, useCallback } from 'react'
 import Header from './components/Header'
 import ServiceCard from './components/ServiceCard'
 import AlertsFeed from './components/AlertsFeed'
-import AddServiceModal from './components/AddServiceModal'
-import { fetchSummary, fetchHealthChecks, fetchIncidents } from './api/client'
+import ServiceModal from './components/ServiceModal'
+import { fetchSummary, fetchHealthChecks, fetchIncidents, fetchServices, deleteService } from './api/client'
 
 export default function App() {
   const [summary, setSummary] = useState([])
+  const [services, setServices] = useState([])
   const [healthData, setHealthData] = useState({})
   const [incidents, setIncidents] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showAddModal, setShowAddModal] = useState(false)
+  const [editingService, setEditingService] = useState(null)
   const [lastRefresh, setLastRefresh] = useState(null)
 
   const loadAll = useCallback(async () => {
     try {
-      // Fetch summary, incidents, and health history in parallel
-      const [{ services }, alertData] = await Promise.all([
+      // Fetch summary, full service details, and incidents in parallel
+      const [{ services: summaryList }, fullServices, alertData] = await Promise.all([
         fetchSummary(),
+        fetchServices(),
         fetchIncidents(10),
       ])
-      setSummary(services)
+      setSummary(summaryList)
+      setServices(fullServices)
       setIncidents(alertData)
 
       const results = await Promise.allSettled(
-        services.map((s) => fetchHealthChecks(s.service_id, 30))
+        summaryList.map((s) => fetchHealthChecks(s.service_id, 30))
       )
       const map = {}
-      services.forEach((s, i) => {
+      summaryList.forEach((s, i) => {
         map[s.service_id] = results[i].status === 'fulfilled' ? results[i].value : []
       })
       setHealthData(map)
@@ -40,6 +44,18 @@ export default function App() {
       setLoading(false)
     }
   }, [])
+
+  async function handleDelete(service) {
+    if (!window.confirm(`Stop monitoring "${service.service_name}"? This will delete its check history.`)) {
+      return
+    }
+    try {
+      await deleteService(service.service_id)
+      loadAll()
+    } catch (err) {
+      window.alert(err.message ?? 'Failed to delete service')
+    }
+  }
 
   useEffect(() => {
     loadAll()
@@ -106,6 +122,8 @@ export default function App() {
               key={service.service_id}
               service={service}
               checks={healthData[service.service_id] ?? []}
+              onEdit={() => setEditingService(services.find((s) => s.id === service.service_id))}
+              onDelete={() => handleDelete(service)}
             />
           ))}
         </div>
@@ -116,10 +134,21 @@ export default function App() {
       </main>
 
       {showAddModal && (
-        <AddServiceModal
+        <ServiceModal
           onClose={() => setShowAddModal(false)}
           onSuccess={() => {
             setShowAddModal(false)
+            loadAll()
+          }}
+        />
+      )}
+
+      {editingService && (
+        <ServiceModal
+          service={editingService}
+          onClose={() => setEditingService(null)}
+          onSuccess={() => {
+            setEditingService(null)
             loadAll()
           }}
         />
