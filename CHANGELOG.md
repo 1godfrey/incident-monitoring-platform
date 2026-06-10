@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.0](https://github.com/1godfrey/incident-monitoring-platform/compare/v1.3.0...v1.4.0) (2026-06-10)
+
+
+### Features
+
+* Service card CRUD ([b80c7b3](https://github.com/1godfrey/incident-monitoring-platform/commit/b80c7b3be11be4699908c4f849085463b596a39c))
+* Service card CRUD ([5e5aa3b](https://github.com/1godfrey/incident-monitoring-platform/commit/5e5aa3b4c85e477736531128dcd3a58b97c86acc))
+
 ## [1.3.0](https://github.com/1godfrey/incident-monitoring-platform/compare/v1.2.0...v1.3.0) (2026-05-27)
 
 
