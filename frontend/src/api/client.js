@@ -11,6 +11,7 @@ async function request(path, options = {}) {
     const body = await res.json().catch(() => ({}))
     throw new Error(body.detail ?? `HTTP ${res.status}`)
   }
+  if (res.status === 204) return null
   return res.json()
 }
 
@@ -27,6 +28,15 @@ export const addService = (name, url, jsonPath = null, expectedValue = null) =>
     method: 'POST',
     body: JSON.stringify({ name, url, json_path: jsonPath, expected_value: expectedValue }),
   })
+
+export const updateService = (serviceId, name, url, jsonPath = null, expectedValue = null) =>
+  request(`/services/${serviceId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ name, url, json_path: jsonPath, expected_value: expectedValue }),
+  })
+
+export const deleteService = (serviceId) =>
+  request(`/services/${serviceId}`, { method: 'DELETE' })
 
 export const fetchIncidents = (limit = 50) =>
   request(`/incidents?limit=${limit}`)

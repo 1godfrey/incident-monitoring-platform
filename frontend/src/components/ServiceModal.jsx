@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { addService } from '../api/client'
+import { addService, updateService } from '../api/client'
 
-export default function AddServiceModal({ onClose, onSuccess }) {
-  const [name, setName] = useState('')
-  const [url, setUrl] = useState('')
-  const [jsonPath, setJsonPath] = useState('')
-  const [expectedValue, setExpectedValue] = useState('')
+export default function ServiceModal({ service, onClose, onSuccess }) {
+  const isEdit = Boolean(service)
+  const [name, setName] = useState(service?.name ?? '')
+  const [url, setUrl] = useState(service?.url ?? '')
+  const [jsonPath, setJsonPath] = useState(service?.json_path ?? '')
+  const [expectedValue, setExpectedValue] = useState(service?.expected_value ?? '')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
 
@@ -14,15 +15,25 @@ export default function AddServiceModal({ onClose, onSuccess }) {
     setError(null)
     setSubmitting(true)
     try {
-      await addService(
-        name.trim(),
-        url.trim(),
-        jsonPath.trim() || null,
-        expectedValue.trim() || null,
-      )
+      if (isEdit) {
+        await updateService(
+          service.id,
+          name.trim(),
+          url.trim(),
+          jsonPath.trim() || null,
+          expectedValue.trim() || null,
+        )
+      } else {
+        await addService(
+          name.trim(),
+          url.trim(),
+          jsonPath.trim() || null,
+          expectedValue.trim() || null,
+        )
+      }
       onSuccess()
     } catch (err) {
-      setError(err.message ?? 'Failed to add service')
+      setError(err.message ?? `Failed to ${isEdit ? 'update' : 'add'} service`)
     } finally {
       setSubmitting(false)
     }
@@ -36,7 +47,7 @@ export default function AddServiceModal({ onClose, onSuccess }) {
   return (
     <div className="modal-backdrop" onClick={handleBackdropClick}>
       <div className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <h2 className="modal-title" id="modal-title">Add Service</h2>
+        <h2 className="modal-title" id="modal-title">{isEdit ? 'Edit Service' : 'Add Service'}</h2>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -102,7 +113,9 @@ export default function AddServiceModal({ onClose, onSuccess }) {
               Cancel
             </button>
             <button type="submit" className="btn btn-primary" disabled={submitting || !name || !url}>
-              {submitting ? 'Adding…' : 'Add Service'}
+              {submitting
+                ? (isEdit ? 'Saving…' : 'Adding…')
+                : (isEdit ? 'Save Changes' : 'Add Service')}
             </button>
           </div>
         </form>

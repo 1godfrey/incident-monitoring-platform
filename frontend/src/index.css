@@ -121,6 +121,34 @@ body {
 .status-badge.down { background: rgba(239,68,68,.12);  color: var(--error);   border: 1px solid rgba(239,68,68,.25); }
 .status-badge.unknown { background: rgba(100,116,139,.12); color: var(--text-muted); border: 1px solid var(--border); }
 
+/* Header right column: status badge + edit/delete actions */
+.card-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: .5rem;
+  flex-shrink: 0;
+}
+.card-actions {
+  display: flex;
+  gap: .35rem;
+}
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.icon-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); border-color: var(--border-focus); }
+.icon-btn-danger:hover { color: var(--error); border-color: rgba(239,68,68,.4); background: rgba(239,68,68,.08); }
+
 .status-dot {
   width: 7px; height: 7px;
   border-radius: 50%;
